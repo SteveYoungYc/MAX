@@ -17,7 +17,7 @@ export STRIP OBJCOPY OBJDUMP
 CFLAGS := -Wall -O2 -g
 CFLAGS += -I $(shell pwd)/include
 
-LDFLAGS :=
+LDFLAGS := -lpthread
 
 export CFLAGS LDFLAGS
 

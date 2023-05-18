@@ -18,9 +18,13 @@ static int TouchscreenDeviceExit(void) {
     return 0;
 }
 
-InputDevice g_tTouchscreenDev = {
+InputOpr g_tTouchscreenDev = {
     .name = "touchscreen",
     .GetInputEvent = TouchscreenGetInputEvent,
     .DeviceInit = TouchscreenDeviceInit,
     .DeviceExit = TouchscreenDeviceExit,
 };
+
+void TouchscreenRegister() {
+    RegisterInput(&g_tTouchscreenDev);
+}

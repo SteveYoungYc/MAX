@@ -24,12 +24,14 @@ typedef struct InputEvent {
     Data data;
 } InputEvent, *PInputEvent;
 
-typedef struct InputDevice {
+typedef struct InputOpr {
     char* name;
     int (*GetInputEvent)(PInputEvent ptInputEvent);
     int (*DeviceInit)(void);
     int (*DeviceExit)(void);
-    struct InputDevice* ptNext;
-} InputDevice, *PInputDevice;
+    struct InputOpr* ptNext;
+} InputOpr, *PInputOpr;
+
+extern void RegisterInput(PInputOpr pInputOpr);
 
 #endif

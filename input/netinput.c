@@ -64,32 +64,13 @@ static int NetinputDeviceExit(void) {
     return 0;
 }
 
-static InputDevice g_tNetinputDev = {
+static InputOpr g_tNetinputDev = {
     .name = "touchscreen",
     .GetInputEvent = NetinputGetInputEvent,
     .DeviceInit = NetinputDeviceInit,
     .DeviceExit = NetinputDeviceExit,
 };
 
-#if 1
-
-int main(int argc, char** argv) {
-    InputEvent event;
-    int ret;
-
-    g_tNetinputDev.DeviceInit();
-
-    while (1) {
-        ret = g_tNetinputDev.GetInputEvent(&event);
-        if (ret) {
-            printf("GetInputEvent err!\n");
-            return -1;
-        } else {
-            printf("Type      : %d\n", event.iType);
-            printf("str       : %s\n", event.data.net.str);
-        }
-    }
-    return 0;
+void NetinputRegister() {
+    RegisterInput(&g_tNetinputDev);
 }
-
-#endif
