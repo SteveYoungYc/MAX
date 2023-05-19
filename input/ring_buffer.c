@@ -15,11 +15,11 @@ void ringBufferExit(RingBuffer* buffer) {
 }
 
 int isBufferFull(RingBuffer* buffer) {
-    return buffer->write == buffer->read;
+    return ((buffer->write + 1) % buffer->len) == buffer->read;
 }
 
 int isBufferEmpty(RingBuffer* buffer) {
-    return ((buffer->write + 1) % buffer->len) == buffer->read;
+    return buffer->write == buffer->read;
 }
 
 int putToBuffer(RingBuffer* buffer, InputEvent* event) {
