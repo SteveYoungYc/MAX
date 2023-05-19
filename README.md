@@ -1,4 +1,5 @@
 # Embedded Linux Project
+## Config
 ## Build
 In $pwd folder:
 ```shell
