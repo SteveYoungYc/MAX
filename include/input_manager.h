@@ -2,6 +2,10 @@
 #define _INPUT_MANAGER_H
 
 #include <common.h>
+#include <string.h>
+#include <pthread.h>
+
+#define RING_BUFF_LEN 20
 
 typedef struct TsInput {
     int iX;
@@ -32,6 +36,19 @@ typedef struct InputOpr {
     struct InputOpr* ptNext;
 } InputOpr, *PInputOpr;
 
+typedef struct RingBuffer {
+    int len;
+    int read;
+    int write;
+    InputEvent inputEvents[RING_BUFF_LEN];
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+} RingBuffer;
+
+extern RingBuffer gRingBuffer;
 extern void RegisterInput(PInputOpr pInputOpr);
+extern void ringBufferInit(RingBuffer *buffer);
+extern int putToBuffer(RingBuffer* buffer, InputEvent* event);
+extern int getFromBuffer(RingBuffer* buffer, InputEvent* event);
 
 #endif

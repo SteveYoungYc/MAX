@@ -1,7 +1,7 @@
 #include <input_manager.h>
-#include <pthread.h>
 
 static PInputOpr g_InputDevs = NULL;
+RingBuffer gRingBuffer;
 
 void RegisterInput(PInputOpr pInputOpr) {
     pInputOpr->ptNext = g_InputDevs;
@@ -15,7 +15,10 @@ void InputRecv(void* data) {
     while (1) {
         ret = pOpr->GetInputEvent(&event);
         if (!ret) {
-
+            pthread_mutex_lock(&gRingBuffer.mutex);
+            putToBuffer(&gRingBuffer, &event);
+            pthread_cond_signal(&gRingBuffer.cond);
+            pthread_mutex_unlock(&gRingBuffer.mutex);
         }
     }
 }
@@ -28,17 +31,37 @@ int InputManagerInit() {
 
     int ret;
     pthread_t tid;
+    PInputOpr pTmp;
 
-    PInputOpr pTmp = g_InputDevs;
+    ringBufferInit(&gRingBuffer);
+
+    pTmp = g_InputDevs;
     while (pTmp) {
         ret = pTmp->DeviceInit();
         if (ret != 0) {
             return ret;
         }
-        ret = pthread_create(&tid, NULL, (void *)&InputRecv, pTmp);
+        ret = pthread_create(&tid, NULL, (void*)&InputRecv, pTmp);
         pTmp = pTmp->ptNext;
     }
     return 0;
+}
+
+int GetInputEvent(InputEvent* event) {
+    int ret;
+    pthread_mutex_lock(&gRingBuffer.mutex);
+    if (!getFromBuffer(&gRingBuffer, &event)) {
+        pthread_mutex_unlock(&gRingBuffer.mutex);
+        return 0;
+    }
+    pthread_cond_wait(&gRingBuffer.cond, &gRingBuffer.mutex);
+    if (!getFromBuffer(&gRingBuffer, &event)) {
+        ret = 0;
+    } else {
+        ret = -1;
+    }
+    pthread_mutex_unlock(&gRingBuffer.mutex);
+    return ret;
 }
 
 int main() {
