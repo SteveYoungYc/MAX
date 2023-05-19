@@ -1,8 +1,6 @@
 #include <arpa/inet.h>
 #include <input_manager.h>
 #include <netinet/in.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h> /* See NOTES */
 #include <unistd.h>

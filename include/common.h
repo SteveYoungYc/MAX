@@ -2,6 +2,8 @@
 #define _COMMON_H
 
 #include <sys/time.h>
+#include <string.h>
+#include <stdio.h>
 
 #define INPUT_TYPE_TOUCH 1
 #define INPUT_TYPE_NET 2

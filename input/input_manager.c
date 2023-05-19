@@ -26,8 +26,6 @@ void InputRecv(void* data) {
 int InputManagerInit() {
     extern void NetinputRegister();
     NetinputRegister();
-    extern void TouchscreenRegister();
-    TouchscreenRegister();
 
     int ret;
     pthread_t tid;
@@ -47,23 +45,23 @@ int InputManagerInit() {
     return 0;
 }
 
+void InputManagerExit() {
+    ringBufferExit(&gRingBuffer);
+}
+
 int GetInputEvent(InputEvent* event) {
     int ret;
     pthread_mutex_lock(&gRingBuffer.mutex);
-    if (!getFromBuffer(&gRingBuffer, &event)) {
+    if (!getFromBuffer(&gRingBuffer, event)) {
         pthread_mutex_unlock(&gRingBuffer.mutex);
         return 0;
     }
     pthread_cond_wait(&gRingBuffer.cond, &gRingBuffer.mutex);
-    if (!getFromBuffer(&gRingBuffer, &event)) {
+    if (!getFromBuffer(&gRingBuffer, event)) {
         ret = 0;
     } else {
         ret = -1;
     }
     pthread_mutex_unlock(&gRingBuffer.mutex);
     return ret;
-}
-
-int main() {
-    return 0;
 }

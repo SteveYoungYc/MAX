@@ -2,7 +2,6 @@
 #define _INPUT_MANAGER_H
 
 #include <common.h>
-#include <string.h>
 #include <pthread.h>
 
 #define RING_BUFF_LEN 20
@@ -46,9 +45,15 @@ typedef struct RingBuffer {
 } RingBuffer;
 
 extern RingBuffer gRingBuffer;
-extern void RegisterInput(PInputOpr pInputOpr);
+
 extern void ringBufferInit(RingBuffer *buffer);
+extern void ringBufferExit(RingBuffer *buffer);
 extern int putToBuffer(RingBuffer* buffer, InputEvent* event);
 extern int getFromBuffer(RingBuffer* buffer, InputEvent* event);
+
+extern int InputManagerInit();
+extern void InputManagerExit();
+extern void RegisterInput(PInputOpr pInputOpr);
+extern int GetInputEvent(InputEvent* event);
 
 #endif
