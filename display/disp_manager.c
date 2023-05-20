@@ -1,8 +1,8 @@
 #include <disp_manager.h>
+#include <font_manager.h>
 #include <stdio.h>
 #include <string.h>
 
-/* 管理底层的LCD、WEB */
 static PDispOpr g_DispDevs = NULL;
 static PDispOpr g_DispDefault = NULL;
 static DispBuff g_tDispBuff;
@@ -45,6 +45,30 @@ int PutPixel(int x, int y, unsigned int dwColor) {
     }
 
     return 0;
+}
+
+void DrawFontBitMap(PFontBitMap ptFontBitMap, unsigned int dwColor) {
+    int i, j, p, q;
+    int x = ptFontBitMap->tRegion.iLeftUpX;
+    int y = ptFontBitMap->tRegion.iLeftUpY;
+    int x_max = x + ptFontBitMap->tRegion.iWidth;
+    int y_max = y + ptFontBitMap->tRegion.iHeigh;
+    int width = ptFontBitMap->tRegion.iWidth;
+    unsigned char* buffer = ptFontBitMap->pucBuffer;
+
+    // printf("x = %d, y = %d\n", x, y);
+
+    for (j = y, q = 0; j < y_max; j++, q++) {
+        for (i = x, p = 0; i < x_max; i++, p++) {
+            if (i < 0 || j < 0 ||
+                i >= g_tDispBuff.iXres || j >= g_tDispBuff.iYres)
+                continue;
+
+            // image[j][i] |= bitmap->buffer[q * bitmap->width + p];
+            if (buffer[q * width + p])
+                PutPixel(i, j, dwColor);
+        }
+    }
 }
 
 void RegisterDisplay(PDispOpr ptDispOpr) {

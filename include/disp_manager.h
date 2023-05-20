@@ -2,6 +2,7 @@
 #define _DISP_MANAGER_H
 
 #include <common.h>
+#include <font_manager.h>
 
 typedef struct DispBuff {
     int iXres;
@@ -9,13 +10,6 @@ typedef struct DispBuff {
     int iBpp;
     char* buff;
 } DispBuff, *PDispBuff;
-
-typedef struct Region {
-    int iLeftUpX;
-    int iLeftUpY;
-    int iWidth;
-    int iHeigh;
-} Region, *PRegion;
 
 typedef struct DispOpr {
     char* name;
@@ -32,6 +26,7 @@ void DisplayInit(void);
 int SelectDefaultDisplay(char* name);
 int InitDefaultDisplay(void);
 int PutPixel(int x, int y, unsigned int dwColor);
+void DrawFontBitMap(PFontBitMap ptFontBitMap, unsigned int dwColor);
 int FlushDisplayRegion(PRegion ptRegion, PDispBuff ptDispBuff);
 PDispBuff GetDisplayBuffer(void);
 
