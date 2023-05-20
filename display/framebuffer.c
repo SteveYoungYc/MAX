@@ -46,9 +46,6 @@ static int FbDeviceExit(void) {
     return 0;
 }
 
-/* 可以返回LCD的framebuffer, 以后上层APP可以直接操作LCD, 可以不用FbFlushRegion
- * 也可以malloc返回一块无关的buffer, 要使用FbFlushRegion
- */
 static int FbGetBuffer(PDispBuff ptDispBuff) {
     ptDispBuff->iXres = var.xres;
     ptDispBuff->iYres = var.yres;

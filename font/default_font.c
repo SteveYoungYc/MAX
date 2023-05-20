@@ -4628,7 +4628,6 @@ static const unsigned char fontdata_8x16[FONTDATAMAX] = {
 unsigned char pucBuffer[8 * 16];
 
 static int DefaultFontFontInit(char* aFineName) {
-    
     return 0;
 }
 
