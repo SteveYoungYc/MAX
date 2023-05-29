@@ -5,6 +5,7 @@
 #include <pthread.h>
 
 #define RING_BUFF_LEN 20
+#define INPUT_BUFF_SIZE 1024
 
 typedef struct TsInput {
     int iX;
@@ -13,12 +14,17 @@ typedef struct TsInput {
 } TsInput;
 
 typedef struct NetInput {
-	char str[1024];
+	char str[INPUT_BUFF_SIZE];
 } NetInput;
+
+typedef struct StdInput {
+	char str[INPUT_BUFF_SIZE];
+} StdInput;
 
 typedef union Data {
     TsInput ts;
     NetInput net;
+    StdInput std;
 } Data;
 
 typedef struct InputEvent {

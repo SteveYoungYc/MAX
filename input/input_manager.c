@@ -26,6 +26,8 @@ void InputRecv(void* data) {
 int InputManagerInit() {
     extern void NetinputRegister();
     NetinputRegister();
+    extern void StdinputRegister();
+    StdinputRegister();
 
     int ret;
     pthread_t tid;

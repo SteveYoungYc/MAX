@@ -17,17 +17,17 @@ static int g_iSocketServer;
 static int NetinputGetInputEvent(PInputEvent ptInputEvent) {
     struct sockaddr_in tSocketClientAddr;
     int iRecvLen;
-    char ucRecvBuf[1000];
+    char ucRecvBuf[INPUT_BUFF_SIZE];
 
     unsigned int iAddrLen = sizeof(struct sockaddr);
 
-    iRecvLen = recvfrom(g_iSocketServer, ucRecvBuf, 999, 0, (struct sockaddr*)&tSocketClientAddr, &iAddrLen);
+    iRecvLen = recvfrom(g_iSocketServer, ucRecvBuf, INPUT_BUFF_SIZE - 1, 0, (struct sockaddr*)&tSocketClientAddr, &iAddrLen);
     if (iRecvLen > 0) {
         ucRecvBuf[iRecvLen] = '\0';
         ptInputEvent->iType = INPUT_TYPE_NET;
         gettimeofday(&ptInputEvent->tTime, NULL);
-        strncpy(ptInputEvent->data.net.str, ucRecvBuf, 1000);
-        ptInputEvent->data.net.str[999] = '\0';
+        strncpy(ptInputEvent->data.net.str, ucRecvBuf, INPUT_BUFF_SIZE);
+        ptInputEvent->data.net.str[INPUT_BUFF_SIZE - 1] = '\0';
         return 0;
     }
     return -1;
@@ -63,7 +63,7 @@ static int NetinputDeviceExit(void) {
 }
 
 static InputOpr g_tNetinputDev = {
-    .name = "touchscreen",
+    .name = "network",
     .GetInputEvent = NetinputGetInputEvent,
     .DeviceInit = NetinputDeviceInit,
     .DeviceExit = NetinputDeviceExit,
