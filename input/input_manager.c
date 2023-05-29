@@ -1,4 +1,6 @@
 #include <input_manager.h>
+#include <input/netinput.h>
+#include <input/stdinput.h>
 
 static PInputOpr g_InputDevs = NULL;
 RingBuffer gRingBuffer;
@@ -24,9 +26,7 @@ void InputRecv(void* data) {
 }
 
 int InputManagerInit() {
-    extern void NetinputRegister();
     NetinputRegister();
-    extern void StdinputRegister();
     StdinputRegister();
 
     int ret;

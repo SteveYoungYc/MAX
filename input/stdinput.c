@@ -1,15 +1,9 @@
-#include <arpa/inet.h>
 #include <input_manager.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/types.h> /* See NOTES */
-#include <unistd.h>
-
 
 static int StdinputGetInputEvent(PInputEvent ptInputEvent) {
     int recvLen;
     char stdBuf[INPUT_BUFF_SIZE];
-    
+
     if (fgets(stdBuf, sizeof(stdBuf), stdin) != NULL) {
         recvLen = strcspn(stdBuf, "\n");
         stdBuf[recvLen] = '\0';
