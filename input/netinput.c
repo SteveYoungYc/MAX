@@ -13,12 +13,11 @@
 #define SERVER_PORT 8888
 
 static int g_iSocketServer;
+char ucRecvBuf[INPUT_BUFF_SIZE];
 
 static int NetinputGetInputEvent(PInputEvent ptInputEvent) {
     struct sockaddr_in tSocketClientAddr;
     int iRecvLen;
-    char ucRecvBuf[INPUT_BUFF_SIZE];
-
     unsigned int iAddrLen = sizeof(struct sockaddr);
 
     iRecvLen = recvfrom(g_iSocketServer, ucRecvBuf, INPUT_BUFF_SIZE - 1, 0, (struct sockaddr*)&tSocketClientAddr, &iAddrLen);

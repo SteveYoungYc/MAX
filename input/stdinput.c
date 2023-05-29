@@ -1,9 +1,9 @@
 #include <input_manager.h>
 
+char stdBuf[INPUT_BUFF_SIZE];
+
 static int StdinputGetInputEvent(PInputEvent ptInputEvent) {
     int recvLen;
-    char stdBuf[INPUT_BUFF_SIZE];
-
     if (fgets(stdBuf, sizeof(stdBuf), stdin) != NULL) {
         recvLen = strcspn(stdBuf, "\n");
         stdBuf[recvLen] = '\0';
