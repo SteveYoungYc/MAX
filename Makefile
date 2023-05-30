@@ -31,6 +31,7 @@ obj-y += input/
 obj-y += unittest/
 obj-y += font/
 obj-y += i2c/
+obj-y += util/
 
 all : start_recursive_build $(TARGET)
 	@echo $(TARGET) has been built!
