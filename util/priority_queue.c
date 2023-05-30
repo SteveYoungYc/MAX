@@ -26,6 +26,8 @@ PriorityQueue* pqInit(int maxEleNum) {
     memset(pq->eles, 0, (maxEleNum + 1) * sizeof(ElementType));
     pq->capacity = maxEleNum;
     pq->size = 0;
+
+    pthread_mutex_init(&pq->mutex, NULL);
     return pq;
 }
 
@@ -51,10 +53,11 @@ int pqIsEmpty(PriorityQueue* pq) {
 
 int pqInsert(PriorityQueue* pq, ElementType value) {
     int i = 0;
-
+    pthread_mutex_lock(&pq->mutex);
     /*确保优先队列没有满*/
     if (pqIsFull(pq)) {
         printf("priorityQueue is full\n");
+        pthread_mutex_unlock(&pq->mutex);
         return FAILURE;
     }
     printf("insert %d\n", value);
@@ -64,24 +67,31 @@ int pqInsert(PriorityQueue* pq, ElementType value) {
     }
     pq->eles[i] = value;
     pq->size++;
+    pthread_mutex_unlock(&pq->mutex);
     return SUCCESS;
 }
 
 int pqFindMin(PriorityQueue* pq, ElementType* value) {
+    pthread_mutex_lock(&pq->mutex);
     if (pqIsEmpty(pq)) {
         printf("priorityQueue is empty\n");
+        pthread_mutex_unlock(&pq->mutex);
         return FAILURE;
     }
     /*0处的元素作为哨兵没有使用*/
     *value = pq->eles[1];
+    pthread_mutex_unlock(&pq->mutex);
     return SUCCESS;
 }
 
 int pqDeleteMin(PriorityQueue* pq, ElementType* min) {
     int i = 1;
     int minChild = 0;
+
+    pthread_mutex_lock(&pq->mutex);
     if (pqIsEmpty(pq)) {
         printf("priorityqueue is empty\n");
+        pthread_mutex_unlock(&pq->mutex);
         return FAILURE;
     }
     /*取得最小值*/
@@ -92,6 +102,7 @@ int pqDeleteMin(PriorityQueue* pq, ElementType* min) {
     pq->size--;
     if (0 == pq->size) {
         pq->eles[i] = 0;
+        pthread_mutex_unlock(&pq->mutex);
         return SUCCESS;
     }
     /*不断将空穴下滑*/
@@ -111,6 +122,7 @@ int pqDeleteMin(PriorityQueue* pq, ElementType* min) {
 
     /*将最后的元素放在空穴位置*/
     pq->eles[i] = last;
+    pthread_mutex_unlock(&pq->mutex);
     return SUCCESS;
 }
 
@@ -119,6 +131,7 @@ int pqDestory(PriorityQueue* pq) {
     if (NULL == pq) {
         return FAILURE;
     }
+    pthread_mutex_destroy(&pq->mutex);
     free(pq->eles);
     pq->eles = NULL;
     free(pq);
