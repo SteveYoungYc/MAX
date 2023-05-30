@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <util/priority_queue.h>
+#include <time.h>
 
 #define NUM_THREADS 4
 #define ARRAY_SIZE 100
@@ -34,6 +35,8 @@ void* insertElements(void* data) {
 int main(void) {
     PriorityQueue* pq = pqInit(ARRAY_SIZE);
     int arr[ARRAY_SIZE];
+
+    srand(time(NULL));
 
     // Fill the array with random numbers
     for (int i = 0; i < ARRAY_SIZE; i++) {
