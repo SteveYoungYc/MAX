@@ -47,6 +47,15 @@ int PutPixel(int x, int y, unsigned int dwColor) {
     return 0;
 }
 
+int Clear() {
+    for (int i = 0; i < g_tDispBuff.iXres; i++) {
+        for (int j = 16; j < g_tDispBuff.iYres; j++) {
+            PutPixel(i, j, 0x000000);
+        }
+    }
+    return 0;
+}
+
 void DrawFontBitMap(PFontBitMap ptFontBitMap, unsigned int dwColor) {
     int i, j, p, q;
     int x = ptFontBitMap->tRegion.iLeftUpX;
@@ -58,11 +67,12 @@ void DrawFontBitMap(PFontBitMap ptFontBitMap, unsigned int dwColor) {
 
     for (j = y, q = 0; j < y_max; j++, q++) {
         for (i = x, p = 0; i < x_max; i++, p++) {
-            if (i < 0 || j < 0 ||
-                i >= g_tDispBuff.iXres || j >= g_tDispBuff.iYres)
+            if (i < 0 || j < 0 || i >= g_tDispBuff.iXres || j >= g_tDispBuff.iYres)
                 continue;
             if (buffer[q * width + p])
                 PutPixel(i, j, dwColor);
+            else
+                PutPixel(i, j, 0x000000);
         }
     }
 }

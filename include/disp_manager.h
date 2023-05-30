@@ -26,6 +26,7 @@ void DisplayInit(void);
 int SelectDefaultDisplay(char* name);
 int InitDefaultDisplay(void);
 int PutPixel(int x, int y, unsigned int dwColor);
+int Clear();
 void DrawFontBitMap(PFontBitMap ptFontBitMap, unsigned int dwColor);
 int FlushDisplayRegion(PRegion ptRegion, PDispBuff ptDispBuff);
 PDispBuff GetDisplayBuffer(void);
