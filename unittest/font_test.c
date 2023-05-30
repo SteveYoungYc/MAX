@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
     FontsRegister();
 
-    error = SelectAndInitFont("default_font", argv[1]);
+    error = SelectAndInitFont("default_font", NULL);
     if (error) {
         printf("SelectAndInitFont err\n");
         return -1;

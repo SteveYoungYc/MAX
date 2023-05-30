@@ -26,9 +26,10 @@ export TOPDIR
 
 TARGET := test
 
+obj-y += app/
 obj-y += display/
 obj-y += input/
-obj-y += unittest/
+# obj-y += unittest/
 obj-y += font/
 obj-y += i2c/
 obj-y += util/
