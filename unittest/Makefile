@@ -1,4 +1,4 @@
 EXTRA_CFLAGS  := 
 CFLAGS_file.o := 
 
-obj-y += pq_test.o
+obj-y += page_test.o
