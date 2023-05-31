@@ -34,6 +34,7 @@ int displayString(char* str, int lcd_x, int lcd_y, PDispBuff ptBuffer) {
 
 static void MainPageRun(void* pParams) {
     int ret;
+    char output[64];
     InputEvent event;
     PDispBuff ptDispBuff = GetDisplayBuffer();
     PriorityQueue* pq = pqInit(4);
@@ -44,6 +45,9 @@ static void MainPageRun(void* pParams) {
         if (ret) {
             break;
         } else {
+            int buff_size = getBuffSize(&gRingBuffer);
+            snprintf(output, sizeof(output), "buff size: %-64d", buff_size);
+            displayString(output, 0, 80, ptDispBuff);
             switch (event.iType) {
             case INPUT_TYPE_TOUCH:
                 break;

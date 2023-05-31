@@ -61,5 +61,6 @@ extern int InputManagerInit();
 extern void InputManagerExit();
 extern void RegisterInput(PInputOpr pInputOpr);
 extern int GetInputEvent(InputEvent* event);
+extern int getBuffSize(RingBuffer* buffer);
 
 #endif

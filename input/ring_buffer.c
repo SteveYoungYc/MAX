@@ -39,3 +39,13 @@ int getFromBuffer(RingBuffer* buffer, InputEvent* event) {
     buffer->read = (buffer->read + 1) % buffer->len;
     return 0;
 }
+
+int getBuffSize(RingBuffer* buffer) {
+    int size;
+    if (buffer->write >= buffer->read) {
+        size = buffer->write - buffer->read;
+    } else {
+        size = buffer->write + buffer->len - buffer->read;
+    }
+    return size;
+}
