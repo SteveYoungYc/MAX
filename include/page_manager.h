@@ -3,6 +3,8 @@
 
 typedef struct PageAction {
     char* name;
+    void (*Init)(void);
+    void (*Exit)(void);
     void (*Run)(void* pParams);
     struct PageAction* ptNext;
 } PageAction, *PPageAction;

@@ -3,6 +3,7 @@
 #include <input_manager.h>
 #include <page_manager.h>
 #include <util/priority_queue.h>
+#include <led/led.h>
 
 int displayString(char* str, int lcd_x, int lcd_y, PDispBuff ptBuffer) {
     int i = 0;
@@ -32,12 +33,27 @@ int displayString(char* str, int lcd_x, int lcd_y, PDispBuff ptBuffer) {
     return 0;
 }
 
+static void MainPageInit() {
+    for (int i = 0; i < LED_NUM; i++) {
+        sprintf(leds[i].name, "100ask_led%d", i);
+        printf("led name: %s\n", leds[i].name);
+        LEDInit(&leds[i]);
+        LEDSetStatus(&leds[i], 0);
+    }
+}
+
+static void MainPageExit() {
+    for (int i = 0; i < LED_NUM; i++) {
+        LEDExit(&leds[i]);
+    }
+    Clear();
+}
+
 static void MainPageRun(void* pParams) {
     int ret;
     char output[64];
     InputEvent event;
     PDispBuff ptDispBuff = GetDisplayBuffer();
-    PriorityQueue* pq = pqInit(4);
 
     displayString("MAX                                                            ", 0, 0, ptDispBuff);
     while (1) {
@@ -56,10 +72,18 @@ static void MainPageRun(void* pParams) {
                 break;
             case INPUT_TYPE_STD:
                 if (strcmp(event.data.std.str, "/quit") == 0) {
-                    goto quit;
+                    return;
                 }
                 if (strcmp(event.data.std.str, "/clear") == 0) {
                     Clear();
+                    break;
+                }
+                if (strcmp(event.data.std.str, "/ledon") == 0) {
+                    LEDSetStatus(&leds[0], 1);
+                    break;
+                }
+                if (strcmp(event.data.std.str, "/ledoff") == 0) {
+                    LEDSetStatus(&leds[0], 0);
                     break;
                 }
                 displayString(event.data.std.str, 0, 48, ptDispBuff);
@@ -69,13 +93,12 @@ static void MainPageRun(void* pParams) {
             }
         }
     }
-quit:
-    Clear();
-    pqDestory(pq);
 }
 
 static PageAction g_tMainPage = {
     .name = "main",
+    .Init = MainPageInit,
+    .Exit = MainPageExit,
     .Run = MainPageRun,
 };
 

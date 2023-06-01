@@ -39,7 +39,10 @@ int main(int argc, char** argv) {
             return -1;
         }
         PagesRegister();
+
+        Page("main")->Init();
         Page("main")->Run(NULL);
+        Page("main")->Exit();
         InputManagerExit();
 
         // Sending SIGTERM signal to terminate the child process
