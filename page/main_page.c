@@ -1,9 +1,13 @@
 #include <disp_manager.h>
 #include <font_manager.h>
 #include <input_manager.h>
-#include <page_manager.h>
-#include <util/priority_queue.h>
 #include <led/led.h>
+#include <page_manager.h>
+#include <stdlib.h>
+#include <util/priority_queue.h>
+
+#define MAX_COMMAND_LENGTH 32
+#define MAX_ARGS 10
 
 int displayString(char* str, int lcd_x, int lcd_y, PDispBuff ptBuffer) {
     int i = 0;
@@ -65,31 +69,62 @@ static void MainPageRun(void* pParams) {
             snprintf(output, sizeof(output), "buff size: %-64d", buff_size);
             displayString(output, 0, 80, ptDispBuff);
             switch (event.iType) {
-            case INPUT_TYPE_TOUCH:
-                break;
-            case INPUT_TYPE_NET:
-                displayString(event.data.net.str, 0, 32, ptDispBuff);
-                break;
-            case INPUT_TYPE_STD:
-                if (strcmp(event.data.std.str, "/quit") == 0) {
-                    return;
-                }
-                if (strcmp(event.data.std.str, "/clear") == 0) {
-                    Clear();
+                case INPUT_TYPE_TOUCH:
+                    break;
+                case INPUT_TYPE_NET:
+                    displayString(event.data.net.str, 0, 32, ptDispBuff);
+                    break;
+                case INPUT_TYPE_STD: {
+                    char* input = event.data.std.str;
+                    if (input[0] != '/') {
+                        displayString(input, 0, 48, ptDispBuff);
+                        break;
+                    }
+
+                    char command[MAX_COMMAND_LENGTH];
+                    char args[MAX_ARGS][MAX_COMMAND_LENGTH];
+                    char* token = strtok(input, " ");
+                    strncpy(command, token + 1, sizeof(command) - 1);
+                    command[sizeof(command) - 1] = '\0';
+                    int argCount = 0;
+                    while (token != NULL && argCount < MAX_ARGS) {
+                        token = strtok(NULL, " ");
+                        if (token != NULL) {
+                            strncpy(args[argCount], token, sizeof(args[argCount]) - 1);
+                            args[argCount][sizeof(args[argCount]) - 1] = '\0';
+                            argCount++;
+                        }
+                    }
+
+                    if (strcmp(command, "quit") == 0) {
+                        return;
+                    }
+                    if (strcmp(command, "clear") == 0) {
+                        Clear();
+                        break;
+                    }
+                    if (strcmp(command, "led") == 0) {
+                        if (argCount != 2) {
+                            printf("Usage: /led <led index> <status(0/1)>\n");
+                            break;
+                        }
+                        int led_idx = atoi(args[0]);
+                        if (led_idx < 0 || led_idx >= LED_NUM) {
+                            printf("LED index error!\r\n");
+                            break;
+                        }
+                        int status = atoi(args[1]);
+                        if (status != 0 && status != 1) {
+                            printf("LED status error!\r\n");
+                            break;
+                        }
+                        LEDSetStatus(&leds[led_idx], status);
+                        break;
+                    }
                     break;
                 }
-                if (strcmp(event.data.std.str, "/ledon") == 0) {
-                    LEDSetStatus(&leds[0], 1);
+                default:
                     break;
-                }
-                if (strcmp(event.data.std.str, "/ledoff") == 0) {
-                    LEDSetStatus(&leds[0], 0);
-                    break;
-                }
-                displayString(event.data.std.str, 0, 48, ptDispBuff);
-                break;
-            default:
-                break;
             }
         }
     }
