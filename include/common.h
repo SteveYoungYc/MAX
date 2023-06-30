@@ -8,6 +8,7 @@
 #define INPUT_TYPE_TOUCH 1
 #define INPUT_TYPE_NET 2
 #define INPUT_TYPE_STD 3
+#define INPUT_TYPE_KEY 4
 
 #ifndef NULL
 #define NULL (void*)0

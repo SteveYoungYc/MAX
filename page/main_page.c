@@ -123,6 +123,10 @@ static void MainPageRun(void* pParams) {
                     }
                     break;
                 }
+                case INPUT_TYPE_KEY: {
+                    
+                    break;
+                }
                 default:
                     break;
             }

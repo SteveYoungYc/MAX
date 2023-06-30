@@ -3,3 +3,5 @@
 *.o
 test
 client/client
+.cache
+compile_commands.json

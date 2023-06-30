@@ -21,10 +21,16 @@ typedef struct StdInput {
 	char str[INPUT_BUFF_SIZE];
 } StdInput;
 
+typedef struct KeyInput {
+    int id;
+    int value;
+} KeyInput;
+
 typedef union Data {
     TsInput ts;
     NetInput net;
     StdInput std;
+    KeyInput key;
 } Data;
 
 typedef struct InputEvent {
