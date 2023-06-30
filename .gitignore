@@ -5,3 +5,4 @@ test
 client/client
 .cache
 compile_commands.json
+client/local_client

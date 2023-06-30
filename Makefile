@@ -31,11 +31,9 @@ obj-y += display/
 obj-y += input/
 # obj-y += unittest/
 obj-y += font/
-obj-y += i2c/
 obj-y += util/
 obj-y += page/
-obj-y += led/
-obj-y += key/
+obj-y += device/
 
 all : start_recursive_build $(TARGET)
 	@echo $(TARGET) has been built!

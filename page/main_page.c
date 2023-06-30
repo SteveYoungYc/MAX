@@ -2,7 +2,9 @@
 #include <font_manager.h>
 #include <input_manager.h>
 #include <led/led.h>
+#include <eeprom/at24c02.h>
 #include <page_manager.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <util/priority_queue.h>
 
@@ -44,6 +46,8 @@ static void MainPageInit() {
     //     LEDInit(&leds[i]);
     //     LEDSetStatus(&leds[i], 0);
     // }
+    strcpy(eeprom.name, "myat24c02");
+    at24c02_init(&eeprom);
 }
 
 static void MainPageExit() {
@@ -127,6 +131,25 @@ static void MainPageRun(void* pParams) {
                             break;
                         }
                         LEDSetStatus(&leds[led_idx], status);
+                        break;
+                    }
+                    if (strcmp(command, "at24c02") == 0) {
+                        if (argCount != 3) {
+                            printf("Usage: /led <r/w> <address> <data>\n");
+                            break;
+                        }
+                        char address;
+                        char data;
+                        if (*args[0] == 'r') {
+                            address = atoi(args[1]);
+                            printf("[read] addr: %d\n", address);
+                            at24c02_ctl(&eeprom, IOC_AT24C02_READ, address, eeprom.buf);
+                        } else if (*args[0] == 'w') {
+                            address = atoi(args[1]);
+                            data = atoi(args[2]);
+                            printf("[write] addr: %d, data: %d\n", address, data);
+                            at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
+                        }
                         break;
                     }
                     break;
