@@ -38,18 +38,18 @@ int displayString(char* str, int lcd_x, int lcd_y, PDispBuff ptBuffer) {
 }
 
 static void MainPageInit() {
-    for (int i = 0; i < LED_NUM; i++) {
-        sprintf(leds[i].name, "100ask_led%d", i);
-        printf("led name: %s\n", leds[i].name);
-        LEDInit(&leds[i]);
-        LEDSetStatus(&leds[i], 0);
-    }
+    // for (int i = 0; i < LED_NUM; i++) {
+    //     sprintf(leds[i].name, "100ask_led%d", i);
+    //     printf("led name: %s\n", leds[i].name);
+    //     LEDInit(&leds[i]);
+    //     LEDSetStatus(&leds[i], 0);
+    // }
 }
 
 static void MainPageExit() {
-    for (int i = 0; i < LED_NUM; i++) {
-        LEDExit(&leds[i]);
-    }
+    // for (int i = 0; i < LED_NUM; i++) {
+    //     LEDExit(&leds[i]);
+    // }
     Clear();
 }
 
@@ -71,9 +71,16 @@ static void MainPageRun(void* pParams) {
             switch (event.iType) {
                 case INPUT_TYPE_TOUCH:
                     break;
-                case INPUT_TYPE_NET:
-                    displayString(event.data.net.str, 0, 32, ptDispBuff);
+                case INPUT_TYPE_NET: {
+                    // displayString(event.data.net.str, 0, 32, ptDispBuff);
+                    for (int i = 0; i < 8; i++) {
+                        event.data.net.str[i]--;
+                    }
+                    float x = *(float*)event.data.net.str;
+                    float y = *(float*)(event.data.net.str + sizeof(float));
+                    printf("[main page] x: %f, y: %f\n", x, y);
                     break;
+                }
                 case INPUT_TYPE_STD: {
                     char* input = event.data.std.str;
                     if (input[0] != '/') {
@@ -124,7 +131,7 @@ static void MainPageRun(void* pParams) {
                     break;
                 }
                 case INPUT_TYPE_KEY: {
-                    
+                    printf("[key] value: %x\n", event.data.key.value);
                     break;
                 }
                 default:
