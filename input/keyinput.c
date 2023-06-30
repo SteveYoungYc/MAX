@@ -15,6 +15,7 @@ static int KeyGetInputEvent(PInputEvent ptInputEvent) {
 
 static int KeyDeviceInit(void) {
     strcpy(key0.name, "100ask_gpio_key");
+    key_init(&key0);
     printf("key name: %s\n", "100ask_gpio_key");
     return 0;
 }

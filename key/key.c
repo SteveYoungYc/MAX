@@ -29,7 +29,6 @@ int key_exit(key* key) {
 
 int key_read(key* key) {
     if (read(key->fd, &key->value, 4) == 4) {
-        printf("get button: 0x%x\n", key->value);
         return 0;
     }
     return -1;
