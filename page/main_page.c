@@ -60,6 +60,7 @@ static void MainPageExit() {
 static void MainPageRun(void* pParams) {
     int ret;
     char output[64];
+    float current_pos[2];
     InputEvent event;
     PDispBuff ptDispBuff = GetDisplayBuffer();
 
@@ -82,6 +83,8 @@ static void MainPageRun(void* pParams) {
                     }
                     float x = *(float*)event.data.net.str;
                     float y = *(float*)(event.data.net.str + sizeof(float));
+                    current_pos[0] = x;
+                    current_pos[1] = y;
                     // printf("[main page] x: %f, y: %f\n", x, y);
                     PutPixel((int)x, (int)y, 0xff00ff);
                     break;
@@ -156,6 +159,14 @@ static void MainPageRun(void* pParams) {
                 }
                 case INPUT_TYPE_KEY: {
                     printf("[key] value: %x\n", event.data.key.value);
+                    if (event.data.key.value == 0x8101) {
+                        char* p = (char *)current_pos;
+                        for (int i = 0; i < 8; i++) {
+                            char address = i;
+                            char data = *(p + i);
+                            at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
+                        }
+                    }
                     break;
                 }
                 default:
