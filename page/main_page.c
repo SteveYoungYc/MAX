@@ -78,7 +78,8 @@ static void MainPageRun(void* pParams) {
                     }
                     float x = *(float*)event.data.net.str;
                     float y = *(float*)(event.data.net.str + sizeof(float));
-                    printf("[main page] x: %f, y: %f\n", x, y);
+                    // printf("[main page] x: %f, y: %f\n", x, y);
+                    PutPixel((int)x, (int)y, 0xff00ff);
                     break;
                 }
                 case INPUT_TYPE_STD: {
