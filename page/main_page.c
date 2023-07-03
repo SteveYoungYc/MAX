@@ -67,111 +67,107 @@ static void MainPageRun(void* pParams) {
     displayString("MAX                                                            ", 0, 0, ptDispBuff);
     while (1) {
         ret = GetInputEvent(&event);
-        if (ret) {
+        if (ret)
             break;
-        } else {
-            int buff_size = getBuffSize(&gRingBuffer);
-            snprintf(output, sizeof(output), "buff size: %-64d", buff_size);
-            displayString(output, 0, 80, ptDispBuff);
-            switch (event.iType) {
-                case INPUT_TYPE_TOUCH:
-                    break;
-                case INPUT_TYPE_NET: {
-                    // displayString(event.data.net.str, 0, 32, ptDispBuff);
-                    for (int i = 0; i < 8; i++) {
-                        event.data.net.str[i]--;
-                    }
-                    float x = *(float*)event.data.net.str;
-                    float y = *(float*)(event.data.net.str + sizeof(float));
-                    current_pos[0] = x;
-                    current_pos[1] = y;
-                    // printf("[main page] x: %f, y: %f\n", x, y);
-                    PutPixel((int)x, (int)y, 0xff00ff);
-                    break;
+        int buff_size = getBuffSize(&gRingBuffer);
+        snprintf(output, sizeof(output), "buff size: %-64d", buff_size);
+        displayString(output, 0, 80, ptDispBuff);
+        switch (event.iType) {
+            case INPUT_TYPE_TOUCH:
+                break;
+            case INPUT_TYPE_NET: {
+                // displayString(event.data.net.str, 0, 32, ptDispBuff);
+                for (int i = 0; i < 8; i++) {
+                    event.data.net.str[i]--;
                 }
-                case INPUT_TYPE_STD: {
-                    char* input = event.data.std.str;
-                    if (input[0] != '/') {
-                        displayString(input, 0, 48, ptDispBuff);
-                        break;
-                    }
-
-                    char command[MAX_COMMAND_LENGTH];
-                    char args[MAX_ARGS][MAX_COMMAND_LENGTH];
-                    char* token = strtok(input, " ");
-                    strncpy(command, token + 1, sizeof(command) - 1);
-                    command[sizeof(command) - 1] = '\0';
-                    int argCount = 0;
-                    while (token != NULL && argCount < MAX_ARGS) {
-                        token = strtok(NULL, " ");
-                        if (token != NULL) {
-                            strncpy(args[argCount], token, sizeof(args[argCount]) - 1);
-                            args[argCount][sizeof(args[argCount]) - 1] = '\0';
-                            argCount++;
-                        }
-                    }
-
-                    if (strcmp(command, "quit") == 0) {
-                        return;
-                    }
-                    if (strcmp(command, "clear") == 0) {
-                        Clear();
-                        break;
-                    }
-                    if (strcmp(command, "led") == 0) {
-                        if (argCount != 2) {
-                            printf("Usage: /led <led index> <status(0/1)>\n");
-                            break;
-                        }
-                        int led_idx = atoi(args[0]);
-                        if (led_idx < 0 || led_idx >= LED_NUM) {
-                            printf("LED index error!\r\n");
-                            break;
-                        }
-                        int status = atoi(args[1]);
-                        if (status != 0 && status != 1) {
-                            printf("LED status error!\r\n");
-                            break;
-                        }
-                        LEDSetStatus(&leds[led_idx], status);
-                        break;
-                    }
-                    if (strcmp(command, "at24c02") == 0) {
-                        if (argCount != 3) {
-                            printf("Usage: /led <r/w> <address> <data>\n");
-                            break;
-                        }
-                        char address;
-                        char data;
-                        if (*args[0] == 'r') {
-                            address = atoi(args[1]);
-                            printf("[read] addr: %d\n", address);
-                            at24c02_ctl(&eeprom, IOC_AT24C02_READ, address, eeprom.buf);
-                        } else if (*args[0] == 'w') {
-                            address = atoi(args[1]);
-                            data = atoi(args[2]);
-                            printf("[write] addr: %d, data: %d\n", address, data);
-                            at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
-                        }
-                        break;
-                    }
-                    break;
-                }
-                case INPUT_TYPE_KEY: {
-                    printf("[key] value: %x\n", event.data.key.value);
-                    if (event.data.key.value == 0x8101) {
-                        char* p = (char *)current_pos;
-                        for (int i = 0; i < 8; i++) {
-                            char address = i;
-                            char data = *(p + i);
-                            at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
-                        }
-                    }
-                    break;
-                }
-                default:
-                    break;
+                float x = *(float*)event.data.net.str;
+                float y = *(float*)(event.data.net.str + sizeof(float));
+                current_pos[0] = x;
+                current_pos[1] = y;
+                // printf("[main page] x: %f, y: %f\n", x, y);
+                PutPixel((int)x, (int)y, 0xff00ff);
+                break;
             }
+            case INPUT_TYPE_STD: {
+                char* input = event.data.std.str;
+                if (input[0] != '/') {
+                    displayString(input, 0, 48, ptDispBuff);
+                    break;
+                }
+                char command[MAX_COMMAND_LENGTH];
+                char args[MAX_ARGS][MAX_COMMAND_LENGTH];
+                char* token = strtok(input, " ");
+                strncpy(command, token + 1, sizeof(command) - 1);
+                command[sizeof(command) - 1] = '\0';
+                int argCount = 0;
+                while (token != NULL && argCount < MAX_ARGS) {
+                    token = strtok(NULL, " ");
+                    if (token != NULL) {
+                        strncpy(args[argCount], token, sizeof(args[argCount]) - 1);
+                        args[argCount][sizeof(args[argCount]) - 1] = '\0';
+                        argCount++;
+                    }
+                }
+                if (strcmp(command, "quit") == 0) {
+                    return;
+                }
+                if (strcmp(command, "clear") == 0) {
+                    Clear();
+                    break;
+                }
+                if (strcmp(command, "led") == 0) {
+                    if (argCount != 2) {
+                        printf("Usage: /led <led index> <status(0/1)>\n");
+                        break;
+                    }
+                    int led_idx = atoi(args[0]);
+                    if (led_idx < 0 || led_idx >= LED_NUM) {
+                        printf("LED index error!\r\n");
+                        break;
+                    }
+                    int status = atoi(args[1]);
+                    if (status != 0 && status != 1) {
+                        printf("LED status error!\r\n");
+                        break;
+                    }
+                    LEDSetStatus(&leds[led_idx], status);
+                    break;
+                }
+                if (strcmp(command, "rom") == 0) {
+                    if (argCount != 3) {
+                        printf("Usage: /led <r/w> <address> <data>\n");
+                        break;
+                    }
+                    char address;
+                    char data;
+                    if (*args[0] == 'r') {
+                        address = atoi(args[1]);
+                        printf("[read] addr: %d\n", address);
+                        at24c02_ctl(&eeprom, IOC_AT24C02_READ, address, eeprom.buf);
+                    } else if (*args[0] == 'w') {
+                        address = atoi(args[1]);
+                        data = atoi(args[2]);
+                        printf("[write] addr: %d, data: %d\n", address, data);
+                        at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
+                    }
+                    break;
+                }
+                break;
+            }
+            case INPUT_TYPE_KEY: {
+                printf("[key] value: %x\n", event.data.key.value);
+                if (event.data.key.value == 0x8101) {
+                    char* p = (char *)current_pos;
+                    for (int i = 0; i < 8; i++) {
+                        char address = i;
+                        char data = *(p + i);
+                        at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
+                    }
+                }
+                break;
+            }
+            default:
+                break;
         }
     }
 }
