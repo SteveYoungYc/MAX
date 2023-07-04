@@ -45,3 +45,8 @@ int at24c02_ctl(at24c02* eeprom, int request, char addr, char* data) {
     }
     return 0;
 }
+
+// Data format: address len data[0...]
+int at24c02_write_bytes(at24c02* eeprom, char* data) {
+    return ioctl(eeprom->fd, IOC_AT24C02_WRITE_BYTES, data);
+}

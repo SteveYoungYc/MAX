@@ -157,12 +157,14 @@ static void MainPageRun(void* pParams) {
             case INPUT_TYPE_KEY: {
                 printf("[key] value: %x\n", event.data.key.value);
                 if (event.data.key.value == 0x8101) {
-                    char* p = (char *)current_pos;
+                    char address = 0;
+                    char data[2 + sizeof(float) * 2];
+                    data[0] = address;
+                    data[1] = 8;
                     for (int i = 0; i < 8; i++) {
-                        char address = i;
-                        char data = *(p + i);
-                        at24c02_ctl(&eeprom, IOC_AT24C02_WRITE, address, &data);
+                        data[i + 2] = *((char*)current_pos + i);
                     }
+                    at24c02_write_bytes(&eeprom, data);
                 }
                 break;
             }
