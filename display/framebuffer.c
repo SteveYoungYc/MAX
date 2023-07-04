@@ -18,9 +18,10 @@ static unsigned int line_width;
 static unsigned int pixel_width;
 
 static int FbDeviceInit(void) {
-    fd_fb = open("/dev/fb0", O_RDWR);
+    // fb1 is my own lcd driver file, fb0 is the original one
+    fd_fb = open("/dev/fb1", O_RDWR);
     if (fd_fb < 0) {
-        printf("can't open /dev/fb0\n");
+        printf("can't open /dev/fb1\n");
         return -1;
     }
     if (ioctl(fd_fb, FBIOGET_VSCREENINFO, &var)) {
