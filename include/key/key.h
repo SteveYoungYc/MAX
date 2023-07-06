@@ -1,12 +1,15 @@
 #ifndef _KEY_H
 #define _KEY_H
 
+#include <linux/input.h>
+
 #define KEY_NUM 2
 
 typedef struct key {
-    char name[32];
     int fd;
+    int code;
     int value;
+    struct input_event event;
 } key;
 
 extern key key0;
